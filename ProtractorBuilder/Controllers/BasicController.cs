@@ -7,13 +7,13 @@ namespace ProtractorBuilder.Controllers
     [Route("api/[controller]")]
 	public class BasicController : Controller
 	{
-		[HttpGet]
+		[HttpGet("action")]
 		public string[] GetActions()
 		{
             return Enum.GetNames(typeof(ActionSequence));
 		}
 
-		[HttpGet]
+		[HttpGet("locator")]
 		public string[] GetLocators()
 		{
 			return Enum.GetNames(typeof(Locator));

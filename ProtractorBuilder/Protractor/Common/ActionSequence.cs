@@ -4,31 +4,62 @@ namespace ProtractorBuilder.Protractor.Common
 {
     public enum ActionSequence
     {
+        loadUrl,
+
+        locateElement,
+
+        [Description("Get Parent Element")]
+        getDriver,
+
         [Description("Click")]
-        Click,
+        click,
+
+		[Description("Send Keys")]
+		sendKeys,
+
+        getTagName,
+
+        getCssValue,
+
+        getAttribute,
+
+        getText,
+
+        getSize,
+
+        getLocation,
+
+        isEnabled,
+
+        isSelected,
+
+        submit,
+
+        clear,
+
+        isDisplayed,
+
+        expect,
 
         [Description("Double Click")]
-        DoubleClick,
+        doubleClick,
 
         [Description("Drag and Drop")]
-        DragAndDrop,
+        dragAndDrop,
 
         [Description("Key Down")]
-        KeyDown,
+        keyDown,
 
         [Description("Key Up")]
-        KeyUp,
+        keyUp,
 
         [Description("Mouse Down")]
-        MouseDown,
+        mouseDown,
 
         [Description("Mouse Move")]
-        MouseMove,
+        mouseMove,
 
         [Description("Mouse Up")]
-        MouseUp,
-
-        [Description("Send Keys")]
-        SendKeys
+        mouseUp
     }
 }

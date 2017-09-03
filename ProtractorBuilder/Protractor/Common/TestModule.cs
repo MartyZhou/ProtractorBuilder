@@ -2,21 +2,9 @@
 
 namespace ProtractorBuilder.Protractor.Common
 {
-    public class TestModule
+    public class TestModule : TestStepWrapper
     {
-        public string Name
-        {
-            get;
-            set;
-        }
-
-        public bool Enabled
-        {
-            get;
-            set;
-        }
-
-        public List<TestSuit> Suits
+        public List<TestSuite> Suites
         {
             get;
             set;

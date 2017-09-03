@@ -2,15 +2,9 @@
 
 namespace ProtractorBuilder.Protractor.Common
 {
-    public class TestCase
+    public class TestCase : TestStepWrapper
     {
-        public string Name
-        {
-            get;
-            set;
-        }
-
-        public bool Enabled
+        public string Log
         {
             get;
             set;

@@ -1,35 +1,41 @@
 ﻿namespace ProtractorBuilder.Protractor.Common
 {
-    public class TestStep
+    public class TestStep : TestEntity
     {
-        public string Name
-        {
-            get;
-            set;
-        }
+		public string Value
+		{
+			get;
+			set;
+		}
 
-        public string Value
-        {
-            get;
-            set;
-        }
+		public ActionSequence ActionSequence
+		{
+			get;
+			set;
+		}
 
-        public ActionSequence ActionSequence
-        {
-            get;
-            set;
-        }
+		public Locator Locator
+		{
+			get;
+			set;
+		}
 
-        public Locator Locator
-        {
-            get;
-            set;
-        }
+		public string LastSuccessfulElement
+		{
+			get;
+			set;
+		}
 
-        public TestStep ResultFrom
-        {
-            get;
-            set;
-        }
+		public string CurrentFailedElement
+		{
+			get;
+			set;
+		}
+
+		public TestStep ResultFrom
+		{
+			get;
+			set;
+		}
     }
 }

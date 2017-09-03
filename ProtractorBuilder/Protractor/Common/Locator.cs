@@ -2,14 +2,14 @@
 {
     public enum Locator
     {
-        ClassName,
-        CSS,
-        Id,
-        LinkText,
-        JS,
-        Name,
-        PartialLinkText,
-        TagName,
-        XPath
+        className,
+        css,
+        id,
+        linkText,
+        js,
+        name,
+        partialLinkText,
+        tagName,
+        xpath
     }
 }
