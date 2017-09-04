@@ -11,7 +11,7 @@ using ProtractorBuilder.Protractor.DbContext;
 namespace ProtractorBuilder.Controllers
 {
     [Route("api/[controller]")]
-    public class SuiteController : Controller
+    public class SuitesController : Controller
     {
         [HttpGet]
         public async Task<IEnumerable<TestSuite>> Get()
@@ -21,6 +21,19 @@ namespace ProtractorBuilder.Controllers
                 return await db.Suites.ToListAsync();
             }
         }
+
+		[HttpGet("{id}")]
+		public async Task<TestSuite> Get(string id)
+		{
+			using (var db = new TestContext())
+			{
+				return await db.Suites
+									.Include(s => s.BeforeAll)
+									.Include(s => s.Cases)
+									.ThenInclude(c => c.Steps)
+									.SingleAsync(s => s.Id == id);
+			}
+		}
 
         [HttpGet("export/{id}")]
         public async Task<string> Export(string id)

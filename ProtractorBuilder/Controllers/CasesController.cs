@@ -9,7 +9,7 @@ using ProtractorBuilder.Protractor.DbContext;
 namespace ProtractorBuilder.Controllers
 {
     [Route("api/[controller]")]
-    public class CaseController : Controller
+    public class CasesController : Controller
     {
         [HttpGet]
         public async Task<IEnumerable<TestCase>> Get()

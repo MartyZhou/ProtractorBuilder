@@ -8,7 +8,7 @@ using ProtractorBuilder.Protractor.DbContext;
 namespace ProtractorBuilder.Controllers
 {
     [Route("api/[controller]")]
-    public class StepController : Controller
+    public class StepsController : Controller
     {
 		[HttpGet]
 		public async Task<IEnumerable<TestStep>> Get()
