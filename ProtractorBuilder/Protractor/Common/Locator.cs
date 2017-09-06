@@ -2,6 +2,7 @@
 {
     public enum Locator
     {
+        none,
         className,
         css,
         id,
