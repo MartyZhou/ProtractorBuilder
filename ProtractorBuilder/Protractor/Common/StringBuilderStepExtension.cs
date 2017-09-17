@@ -1,36 +1,43 @@
-﻿using System.Text;
+﻿using System;
+using System.Text;
 
 namespace ProtractorBuilder.Protractor.Common
 {
     public static class StringBuilderStepExtension
     {
-		public static void AppendStep(this StringBuilder sb, TestStep step)
-		{
-			switch (step.ActionSequence)
-			{
-				case ActionSequence.locateElement:
-					sb.AppendLocateElement(step);
-					break;
-				case ActionSequence.click:
-					sb.AppendClick(step);
-					break;
-				case ActionSequence.mouseMove:
-					sb.AppendMove(step);
-					break;
-				case ActionSequence.getText:
-					sb.AppendGetText(step);
-					break;
-				case ActionSequence.expect:
-					sb.AppendExpect(step);
-					break;
+        public static void AppendStep(this StringBuilder sb, TestStep step)
+        {
+            switch (step.ActionSequence)
+            {
+                case ActionSequence.locateElement:
+                    sb.AppendLocateElement(step);
+                    break;
+                case ActionSequence.click:
+                    sb.AppendClick(step);
+                    break;
+                case ActionSequence.mouseMove:
+                    sb.AppendMove(step);
+                    break;
+                case ActionSequence.getText:
+                    sb.AppendGetText(step);
+                    break;
+                case ActionSequence.expect:
+                    sb.AppendExpect(step);
+                    break;
                 case ActionSequence.loadUrl:
                     sb.AppendLoadUrl(step);
                     break;
-				default:
-					break;
-			}
-		}
-        
+                case ActionSequence.wait:
+                    sb.AppendWaitText(step);
+                    break;
+                case ActionSequence.sendKeys:
+                    sb.AppendSendKeys(step);
+                    break;
+                default:
+                    break;
+            }
+        }
+
         public static void AppendExpect(this StringBuilder sb, TestStep step)
         {
             if (step.ResultFrom != null)
@@ -40,6 +47,18 @@ namespace ProtractorBuilder.Protractor.Common
             else
             {
                 sb.AppendLine("// TODO, fail this case.");
+            }
+        }
+
+        public static void AppendWaitText(this StringBuilder sb, TestStep step)
+        {
+            try
+            {
+                sb.AppendFormat("await browser.sleep({0});\n", Convert.ToInt32(step.Value) * 1000);
+            }
+            catch (Exception ex)
+            {
+                // TODO handle exception.
             }
         }
 
@@ -87,6 +106,18 @@ namespace ProtractorBuilder.Protractor.Common
                 sb.AppendLine("// TODO, fail this case.");
             }
         }
+
+		public static void AppendSendKeys(this StringBuilder sb, TestStep step)
+		{
+			if (step.ResultFrom != null)
+			{
+                sb.AppendFormat("await {0}.sendKeys('{1}');\n", step.ResultFrom.Id, step.Value);
+			}
+			else
+			{
+				sb.AppendLine("// TODO, fail this case.");
+			}
+		}
 
         static void AppendLoadUrl(this StringBuilder sb, TestStep step)
         {

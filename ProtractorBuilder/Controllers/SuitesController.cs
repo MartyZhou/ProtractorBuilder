@@ -22,18 +22,18 @@ namespace ProtractorBuilder.Controllers
             }
         }
 
-		[HttpGet("{id}")]
-		public async Task<TestSuite> Get(string id)
-		{
-			using (var db = new TestContext())
-			{
-				return await db.Suites
-									.Include(s => s.BeforeAll)
-									.Include(s => s.Cases)
-									.ThenInclude(c => c.Steps)
-									.SingleAsync(s => s.Id == id);
-			}
-		}
+        [HttpGet("{id}")]
+        public async Task<TestSuite> Get(string id)
+        {
+            using (var db = new TestContext())
+            {
+                return await db.Suites
+                                    .Include(s => s.BeforeAll)
+                                    .Include(s => s.Cases)
+                                    .ThenInclude(c => c.Steps)
+                                    .SingleAsync(s => s.Id == id);
+            }
+        }
 
         [HttpGet("export/{id}")]
         public async Task<string> Export(string id)
@@ -71,10 +71,13 @@ namespace ProtractorBuilder.Controllers
                     value.Cases.Add(db.Cases.Find(caseId));
                 }
 
-                foreach (var step in value.BeforeAll)
+                if (value.BeforeAll != null)
                 {
-                    step.Id = string.Format("_{0}", Guid.NewGuid().ToString("N")); // step Id may be used for variable in the test case, add an underscore to make is a valid variable name
-                    db.Steps.Add(step);
+                    foreach (var step in value.BeforeAll)
+                    {
+                        step.Id = string.Format("_{0}", Guid.NewGuid().ToString("N")); // step Id may be used for variable in the test case, add an underscore to make is a valid variable name
+                        db.Steps.Add(step);
+                    }
                 }
 
                 db.Suites.Add(value);
@@ -85,6 +88,45 @@ namespace ProtractorBuilder.Controllers
             }
 
             return result;
+        }
+
+        [HttpPut]
+        public async Task<string> Put([FromBody]TestSuite value)
+        {
+            using (var db = new TestContext())
+            {
+                if (value.Id != null)
+                {
+                    var suite = db.Suites.Find(value.Id);
+
+                    if (suite != null)
+                    {
+                        suite = await db.Suites
+                                        .Include(s => s.Cases)
+                                        .SingleAsync(s => s.Id == value.Id)
+                                        .ConfigureAwait(false);
+
+                        suite.Cases.RemoveAll(c => true);
+
+                        var caseIds = value.Cases.Select(c => c.Id);
+
+                        foreach (var caseId in caseIds)
+                        {
+                            suite.Cases.Add(db.Cases.Find(caseId));
+                        }
+
+                        suite.Name = value.Name;
+                        suite.Order = value.Order;
+                        suite.Enabled = value.Enabled;
+                        db.SaveChanges();
+                        return suite.Id;
+                    }
+
+                    return Post(value);
+                }
+
+                return Post(value);
+            }
         }
     }
 }

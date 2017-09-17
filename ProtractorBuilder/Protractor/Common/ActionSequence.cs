@@ -6,6 +6,8 @@ namespace ProtractorBuilder.Protractor.Common
     {
         loadUrl,
 
+        wait,
+
         locateElement,
 
         [Description("Get Parent Element")]

@@ -8,12 +8,12 @@ namespace ProtractorBuilder.Protractor.Common
         {
             sb.AppendFormat("var regeneratorRuntime = require('regenerator-runtime');\n\ndescribe('{0}', () => {{\n", suite.Name);
 
+            sb.Append("beforeAll(async () => {\nbrowser.ignoreSynchronization = true;\n");
             if (suite.BeforeAll != null && suite.BeforeAll.Count > 0)
             {
-                sb.Append("beforeAll(async () => {\nbrowser.ignoreSynchronization = true;\n");
                 suite.BeforeAll.ForEach(sb.AppendStep);
-                sb.Append("});\n\n");
             }
+            sb.Append("});\n\n");
 
             // TODO, append BeforeEach
 
