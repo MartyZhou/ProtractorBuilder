@@ -9,6 +9,7 @@ using Microsoft.Extensions.Options;
 using ProtractorBuilder.Protractor.Common;
 using ProtractorBuilder.Protractor.Converter;
 using ProtractorBuilder.Protractor.DbContext;
+using System;
 
 namespace ProtractorBuilder.Controllers
 {
@@ -24,29 +25,52 @@ namespace ProtractorBuilder.Controllers
         }
 
         [HttpPost]
-        public async Task<string> Post()
+        public async Task<string> Post(bool headerless)
         {
             await WriteAllSuites();
 
             var protractorPath = configuration.ProtractorPath;
+            var path = Path.Combine(protractorPath, configName);
+            var pathwithext = Path.ChangeExtension(path, "js");
 
-            var process = new Process()
+            if (headerless)
             {
-                StartInfo = new ProcessStartInfo("protractor", string.Format("{0}/{1}.js", protractorPath, configName))
+                var process = new Process()
                 {
-                    RedirectStandardOutput = true,
-                    UseShellExecute = false,
-                    CreateNoWindow = true
-                }
-            };
+                    StartInfo = new ProcessStartInfo("protractor", pathwithext)
+                    {
+                        RedirectStandardOutput = true,
+                        UseShellExecute = false,
+                        CreateNoWindow = true
+                    }
+                };
 
-            process.Start();
+                process.Start();
 
-            string result = process.StandardOutput.ReadToEnd();
+                string result = process.StandardOutput.ReadToEnd();
 
-            process.WaitForExit();
+                process.WaitForExit();
 
-            return result;
+                return result;
+            }
+            else
+            {
+                var process = new Process()
+                {
+                    StartInfo = new ProcessStartInfo("protractor", pathwithext)
+                    {
+                        RedirectStandardOutput = false,
+                        UseShellExecute = true,
+                        CreateNoWindow = false
+                    }
+                };
+
+                process.Start();
+
+                process.WaitForExit();
+
+                return string.Empty;
+            }
         }
 
         async Task WriteAllSuites()
@@ -76,7 +100,7 @@ namespace ProtractorBuilder.Controllers
 exports.config = {{
   seleniumAddress: '{0}',", configuration.SeleniumAddress));
                     await configWriter.WriteAsync(string.Format("specs: ['{0}'],", string.Join("','", fileNames.Distinct())));
-					await configWriter.WriteAsync(@"capabilities: {
+                    await configWriter.WriteAsync(@"capabilities: {
     browserName: 'chrome'
   }
 };");
