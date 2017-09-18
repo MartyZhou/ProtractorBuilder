@@ -45,6 +45,8 @@ namespace ProtractorBuilder.Controllers
                     }
                 };
 
+                //return pathwithext;
+
                 process.Start();
 
                 string result = process.StandardOutput.ReadToEnd();
