@@ -25,7 +25,7 @@ namespace ProtractorBuilder.Controllers
         }
 
         [HttpPost]
-        public async Task<string> Post(bool headerless)
+        public async Task<string> Post([FromBody]bool headerless)
         {
             await WriteAllSuites();
 
