@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Linq;
+using System.Text;
 
 namespace ProtractorBuilder.Protractor.Common
 {
@@ -17,7 +18,9 @@ namespace ProtractorBuilder.Protractor.Common
 
             // TODO, append BeforeEach
 
-            suite.Cases.ForEach(sb.AppendCase);
+            var cases = suite.Cases.OrderBy(c=>c.Order).ToList();
+            cases.ForEach(sb.AppendCase);
+            //suite.Cases.ForEach(sb.AppendCase);
 
             // TODO, append AfterEach
             // TODO, append AfterAll
