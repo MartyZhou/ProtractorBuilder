@@ -10,13 +10,17 @@ namespace ProtractorBuilder.Controllers
     [Route("api/[controller]")]
     public class StepsController : Controller
     {
-		[HttpGet]
-		public async Task<IEnumerable<TestStep>> Get()
-		{
-			using (var db = new TestContext())
-			{
-                return await db.Steps.ToListAsync();
-			}
-		}
+        readonly TestContext db;
+
+        public StepsController(TestContext testContext)
+        {
+            this.db = testContext;
+        }
+
+        [HttpGet]
+        public async Task<IEnumerable<TestStep>> Get()
+        {
+            return await db.Steps.ToListAsync();
+        }
     }
 }

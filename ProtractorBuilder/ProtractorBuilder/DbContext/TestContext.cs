@@ -3,8 +3,10 @@ using ProtractorBuilder.Protractor.Common;
 
 namespace ProtractorBuilder.Protractor.DbContext
 {
-    public class TestContext: Microsoft.EntityFrameworkCore.DbContext
+    public class TestContext : Microsoft.EntityFrameworkCore.DbContext
     {
+        public TestContext(DbContextOptions<TestContext> options) : base(options) { }
+
         public DbSet<TestModule> Modules
         {
             get;
@@ -36,9 +38,9 @@ namespace ProtractorBuilder.Protractor.DbContext
         //                .WithOne();
         //}
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-		{
-			optionsBuilder.UseSqlite("Data Source=protractor.db");
-		}
+        //      protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        //{
+        //	optionsBuilder.UseSqlite("Data Source=protractor.db");
+        //}
     }
 }

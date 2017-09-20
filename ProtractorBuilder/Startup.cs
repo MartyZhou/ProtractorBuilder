@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using ProtractorBuilder.Protractor.Common;
+using ProtractorBuilder.Protractor.DbContext;
 
 namespace ProtractorBuilder
 {
@@ -24,27 +26,11 @@ namespace ProtractorBuilder
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-    //        services.AddCors(options =>
-    //        {
-    //            options.AddPolicy("AllowAllOrigins", builder =>
-    //            {
-    //                builder.AllowAnyOrigin();
-    //            });
-
-				//options.AddPolicy("AllowAllMethods", builder =>
-				//{
-				//	builder.AllowAnyMethod();
-				//});
-
-				//options.AddPolicy("AllowAllHeaders", builder =>
-				//{
-				//	builder.AllowAnyHeader();
-				//});
-            //});
 
             services.AddOptions();
             services.Configure<ProtractorConfiguration>(Configuration);
             services.AddMvc();
+            services.AddDbContext<TestContext>(options => options.UseSqlite("Data Source=protractor.db"));
 
             services.AddSwaggerGen(c =>
             {

@@ -13,79 +13,75 @@ namespace ProtractorBuilder.Controllers
     [Route("api/[controller]")]
     public class SuitesController : Controller
     {
+        readonly TestContext db;
+
+        public SuitesController(TestContext testContext)
+        {
+            this.db = testContext;
+        }
+
         [HttpGet]
         public async Task<IEnumerable<TestSuite>> Get()
         {
-            using (var db = new TestContext())
-            {
-                return await db.Suites.ToListAsync();
-            }
+            return await db.Suites.ToListAsync();
         }
 
         [HttpGet("{id}")]
         public async Task<TestSuite> Get(string id)
         {
-            using (var db = new TestContext())
-            {
-                return await db.Suites
-                                    .Include(s => s.BeforeAll)
-                                    .Include(s => s.Cases)
-                                    .ThenInclude(c => c.Steps)
-                                    .SingleAsync(s => s.Id == id);
-            }
+            return await db.Suites
+                                .Include(s => s.BeforeAll)
+                                .Include(s => s.Cases)
+                                .ThenInclude(c => c.Steps)
+                                .SingleAsync(s => s.Id == id);
         }
 
         [HttpGet("export/{id}")]
         public async Task<string> Export(string id)
         {
-            using (var db = new TestContext())
+            var suite = await db.Suites
+                                .Include(s => s.BeforeAll)
+                                .Include(s => s.Cases)
+                                .ThenInclude(c => c.Steps)
+                                .SingleAsync(s => s.Id == id);
+
+            if (suite == null)
             {
-                var suite = await db.Suites
-                                    .Include(s => s.BeforeAll)
-                                    .Include(s => s.Cases)
-                                    .ThenInclude(c => c.Steps)
-                                    .SingleAsync(s => s.Id == id);
-
-                if (suite == null)
-                {
-                    return "Suite is not found";
-                }
-
-                return SuiteConverter.ToProtractorSuite(suite);
+                return "Suite is not found";
             }
+
+            return SuiteConverter.ToProtractorSuite(suite);
         }
 
         [HttpPost]
         public string Post([FromBody]TestSuite value)
         {
             var result = string.Empty;
-            using (var db = new TestContext())
+
+            value.Id = Guid.NewGuid().ToString("N");
+
+            var caseIds = value.Cases.Select(c => c.Id);
+            value.Cases = new List<TestCase>();
+
+            foreach (var caseId in caseIds)
             {
-                value.Id = Guid.NewGuid().ToString("N");
-
-                var caseIds = value.Cases.Select(c => c.Id);
-                value.Cases = new List<TestCase>();
-
-                foreach (var caseId in caseIds)
-                {
-                    value.Cases.Add(db.Cases.Find(caseId));
-                }
-
-                if (value.BeforeAll != null)
-                {
-                    foreach (var step in value.BeforeAll)
-                    {
-                        step.Id = string.Format("_{0}", Guid.NewGuid().ToString("N")); // step Id may be used for variable in the test case, add an underscore to make is a valid variable name
-                        db.Steps.Add(step);
-                    }
-                }
-
-                db.Suites.Add(value);
-
-                var count = db.SaveChanges();
-
-                result = value.Id;
+                value.Cases.Add(db.Cases.Find(caseId));
             }
+
+            if (value.BeforeAll != null)
+            {
+                foreach (var step in value.BeforeAll)
+                {
+                    step.Id = string.Format("_{0}", Guid.NewGuid().ToString("N")); // step Id may be used for variable in the test case, add an underscore to make is a valid variable name
+                    db.Steps.Add(step);
+                }
+            }
+
+            db.Suites.Add(value);
+
+            var count = db.SaveChanges();
+
+            result = value.Id;
 
             return result;
         }
@@ -93,40 +89,37 @@ namespace ProtractorBuilder.Controllers
         [HttpPut]
         public async Task<string> Put([FromBody]TestSuite value)
         {
-            using (var db = new TestContext())
+            if (value.Id != null)
             {
-                if (value.Id != null)
+                var suite = db.Suites.Find(value.Id);
+
+                if (suite != null)
                 {
-                    var suite = db.Suites.Find(value.Id);
+                    suite = await db.Suites
+                                    .Include(s => s.Cases)
+                                    .SingleAsync(s => s.Id == value.Id)
+                                    .ConfigureAwait(false);
 
-                    if (suite != null)
+                    suite.Cases.RemoveAll(c => true);
+
+                    var caseIds = value.Cases.Select(c => c.Id);
+
+                    foreach (var caseId in caseIds)
                     {
-                        suite = await db.Suites
-                                        .Include(s => s.Cases)
-                                        .SingleAsync(s => s.Id == value.Id)
-                                        .ConfigureAwait(false);
-
-                        suite.Cases.RemoveAll(c => true);
-
-                        var caseIds = value.Cases.Select(c => c.Id);
-
-                        foreach (var caseId in caseIds)
-                        {
-                            suite.Cases.Add(db.Cases.Find(caseId));
-                        }
-
-                        suite.Name = value.Name;
-                        suite.Order = value.Order;
-                        suite.Enabled = value.Enabled;
-                        db.SaveChanges();
-                        return suite.Id;
+                        suite.Cases.Add(db.Cases.Find(caseId));
                     }
 
-                    return Post(value);
+                    suite.Name = value.Name;
+                    suite.Order = value.Order;
+                    suite.Enabled = value.Enabled;
+                    db.SaveChanges();
+                    return suite.Id;
                 }
 
                 return Post(value);
             }
+
+            return Post(value);
         }
     }
 }
