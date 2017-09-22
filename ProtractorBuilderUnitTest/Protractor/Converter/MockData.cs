@@ -12,10 +12,10 @@ namespace ProtractorBuilderUnitTest.Protractor.Converter
                 Name = "Test Suite: Awesome describe",
                 Enabled = true,
 
-                BeforeAll = new List<TestStep>
-                {
-                    MockLoadUrlStep()
-                },
+                //BeforeAll = new List<TestStep>
+                //{
+                //    MockLoadUrlStep()
+                //},
                 Cases = new List<TestCase>
                 {
                     MockCase()
