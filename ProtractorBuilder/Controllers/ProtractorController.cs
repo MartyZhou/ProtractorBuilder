@@ -84,7 +84,6 @@ namespace ProtractorBuilder.Controllers
         async Task WriteAllSuites()
         {
             var suites = await db.Suites
-                                .Include(s => s.BeforeAll)
                                 .Include(s => s.Cases)
                                 .ThenInclude(c => c.Steps)
                                 .ToListAsync();
