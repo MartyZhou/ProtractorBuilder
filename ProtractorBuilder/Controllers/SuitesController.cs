@@ -66,14 +66,14 @@ namespace ProtractorBuilder.Controllers
                 value.Cases.Add(db.Cases.Find(caseId));
             }
 
-            if (value.BeforeAll != null && value.BeforeAll.Steps != null && value.BeforeAll.Steps.Any())
-            {
-                foreach (var step in value.BeforeAll.Steps)
-                {
-                    step.Id = string.Format("_{0}", Guid.NewGuid().ToString("N")); // step Id may be used for variable in the test case, add an underscore to make is a valid variable name
-                    db.Steps.Add(step);
-                }
-            }
+            //if (value.BeforeAll != null && value.BeforeAll.Steps != null && value.BeforeAll.Steps.Any())
+            //{
+            //    foreach (var step in value.BeforeAll.Steps)
+            //    {
+            //        step.Id = string.Format("_{0}", Guid.NewGuid().ToString("N")); // step Id may be used for variable in the test case, add an underscore to make is a valid variable name
+            //        db.Steps.Add(step);
+            //    }
+            //}
 
             db.Suites.Add(value);
 
