@@ -1,5 +1,5 @@
 ﻿using System;
-using System.IO;
+using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,12 +12,13 @@ namespace ProtractorBuilder
     {
         public static void Main(string[] args)
         {
-            var host = new WebHostBuilder()
-                .UseKestrel()
-                .UseContentRoot(Directory.GetCurrentDirectory())
-                .UseIISIntegration()
-                .UseStartup<Startup>()
-                .Build();
+            BuildWebHost(args).Run();
+        }
+
+        public static IWebHost BuildWebHost(string[] args){
+            var host = WebHost.CreateDefaultBuilder(args)
+				.UseStartup<Startup>()
+				.Build();
 
 			using (var scope = host.Services.CreateScope())
 			{
@@ -34,7 +35,7 @@ namespace ProtractorBuilder
 				}
 			}
 
-            host.Run();
+            return host;
         }
     }
 }
