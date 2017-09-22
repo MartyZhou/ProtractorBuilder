@@ -10,15 +10,12 @@ namespace ProtractorBuilder.Protractor.Common
             sb.AppendFormat("var regeneratorRuntime = require('regenerator-runtime');\n\ndescribe('{0}', () => {{\n", suite.Name);
 
             sb.Append("beforeAll(async () => {\nbrowser.ignoreSynchronization = true;\n");
-            if (suite.BeforeAll != null && suite.BeforeAll.Count > 0)
-            {
-                suite.BeforeAll.ForEach(sb.AppendStep);
-            }
+            // TODO, append BeforeAll
             sb.Append("});\n\n");
 
             // TODO, append BeforeEach
 
-            var cases = suite.Cases.OrderBy(c=>c.Order).ToList();
+            var cases = suite.Cases.OrderBy(c => c.Order).ToList();
             cases.ForEach(sb.AppendCase);
             //suite.Cases.ForEach(sb.AppendCase);
 

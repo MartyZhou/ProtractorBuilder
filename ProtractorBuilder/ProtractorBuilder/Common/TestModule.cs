@@ -4,10 +4,6 @@ namespace ProtractorBuilder.Protractor.Common
 {
     public class TestModule : TestStepWrapper
     {
-        public List<TestSuite> Suites
-        {
-            get;
-            set;
-        }
+        public List<TestSuite> Suites { get; set; }
     }
 }

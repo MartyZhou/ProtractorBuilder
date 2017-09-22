@@ -30,7 +30,6 @@ namespace ProtractorBuilder.Controllers
         public async Task<TestSuite> Get(string id)
         {
             return await db.Suites
-                                .Include(s => s.BeforeAll)
                                 .Include(s => s.Cases)
                                 .ThenInclude(c => c.Steps)
                                 .SingleAsync(s => s.Id == id);
@@ -40,7 +39,6 @@ namespace ProtractorBuilder.Controllers
         public async Task<string> Export(string id)
         {
             var suite = await db.Suites
-                                .Include(s => s.BeforeAll)
                                 .Include(s => s.Cases)
                                 .ThenInclude(c => c.Steps)
                                 .SingleAsync(s => s.Id == id);
@@ -68,9 +66,9 @@ namespace ProtractorBuilder.Controllers
                 value.Cases.Add(db.Cases.Find(caseId));
             }
 
-            if (value.BeforeAll != null)
+            if (value.BeforeAll != null && value.BeforeAll.Steps != null && value.BeforeAll.Steps.Any())
             {
-                foreach (var step in value.BeforeAll)
+                foreach (var step in value.BeforeAll.Steps)
                 {
                     step.Id = string.Format("_{0}", Guid.NewGuid().ToString("N")); // step Id may be used for variable in the test case, add an underscore to make is a valid variable name
                     db.Steps.Add(step);

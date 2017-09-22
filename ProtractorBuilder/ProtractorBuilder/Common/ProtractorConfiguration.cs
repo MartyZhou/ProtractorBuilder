@@ -2,16 +2,8 @@
 {
     public class ProtractorConfiguration
     {
-        public string ProtractorPath
-        {
-            get;
-            set;
-        }
+        public string ProtractorPath { get; set; }
 
-        public string SeleniumAddress
-        {
-            get;
-            set;
-        }
+        public string SeleniumAddress { get; set; }
     }
 }

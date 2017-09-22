@@ -4,16 +4,10 @@ namespace ProtractorBuilder.Protractor.Common
 {
     public class TestCase : TestStepWrapper
     {
-        public string Log
-        {
-            get;
-            set;
-        }
+        public TestCaseType TestCaseType { get; set; }
 
-        public List<TestStep> Steps
-        {
-            get;
-            set;
-        }
+        public string Log { get; set; }
+
+        public List<TestStep> Steps { get; set; }
     }
 }

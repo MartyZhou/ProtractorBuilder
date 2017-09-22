@@ -7,40 +7,26 @@ namespace ProtractorBuilder.Protractor.DbContext
     {
         public TestContext(DbContextOptions<TestContext> options) : base(options) { }
 
-        public DbSet<TestModule> Modules
+        public DbSet<TestModule> Modules { get; set; }
+
+        public DbSet<TestSuite> Suites { get; set; }
+
+        public DbSet<TestCase> Cases { get; set; }
+
+        public DbSet<TestStep> Steps { get; set; }
+
+        public DbSet<TestModuleSuite> ModulesSuites { get; set; }
+
+        public DbSet<TestSuiteCase> SuitesCases { get; set; }
+
+        public DbSet<TestCaseStep> CasesSteps { get; set; }
+
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            get;
-            set;
+            modelBuilder.Entity<TestModuleSuite>().HasKey(c => new { c.TestModuleId, c.TestSuiteId });
+            modelBuilder.Entity<TestSuiteCase>().HasKey(c => new { c.TestSuiteId, c.TestCaseId });
+            modelBuilder.Entity<TestCaseStep>().HasKey(c => new { c.TestCaseId, c.TestStepId });
         }
-
-        public DbSet<TestSuite> Suites
-        {
-            get;
-            set;
-        }
-
-        public DbSet<TestCase> Cases
-        {
-            get;
-            set;
-        }
-
-        public DbSet<TestStep> Steps
-        {
-            get;
-            set;
-        }
-
-        //protected override void OnModelCreating(ModelBuilder modelBuilder)
-        //{
-        //    modelBuilder.Entity<TestCase>()
-        //                .HasMany(c => c.Steps)
-        //                .WithOne();
-        //}
-
-        //      protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        //{
-        //	optionsBuilder.UseSqlite("Data Source=protractor.db");
-        //}
     }
 }
